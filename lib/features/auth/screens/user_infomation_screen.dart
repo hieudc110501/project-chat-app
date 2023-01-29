@@ -1,15 +1,22 @@
-import 'package:flutter/material.dart';
+import 'dart:io';
 
-class UserInfomationScreen extends StatefulWidget {
+import 'package:flutter/material.dart';
+import 'package:flutter_chat_app/common/utils/utils.dart';
+import 'package:flutter_chat_app/features/auth/controller/auth_controller.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+class UserInfomationScreen extends ConsumerStatefulWidget {
   static const String routeName = '/user-infomation';
   const UserInfomationScreen({super.key});
 
   @override
-  State<UserInfomationScreen> createState() => _UserInfomationScreenState();
+  ConsumerState<UserInfomationScreen> createState() =>
+      _UserInfomationScreenState();
 }
 
-class _UserInfomationScreenState extends State<UserInfomationScreen> {
+class _UserInfomationScreenState extends ConsumerState<UserInfomationScreen> {
   final TextEditingController nameController = TextEditingController();
+  File? image;
 
   @override
   void dispose() {
@@ -18,7 +25,19 @@ class _UserInfomationScreenState extends State<UserInfomationScreen> {
   }
 
   void selectImage() async {
-    
+    image = await pickImageFromGallery(context);
+    setState(() {});
+  }
+
+  void storeUserData() async {
+    String name = nameController.text.trim();
+    if (name.isNotEmpty) {
+      ref.read(authControllerProvider).saveUserDataToFirebase(
+            context,
+            name,
+            image,
+          );
+    }
   }
 
   @override
@@ -32,17 +51,24 @@ class _UserInfomationScreenState extends State<UserInfomationScreen> {
             children: [
               Stack(
                 children: [
-                  CircleAvatar(
-                    backgroundImage: NetworkImage(
-                      'https://png.pngitem.com/pimgs/s/649-6490124_katie-notopoulos-katienotopoulos-i-write-about-tech-round.png',
-                    ),
-                    radius: 64,
-                  ),
+                  image == null
+                      ? const CircleAvatar(
+                          backgroundImage: NetworkImage(
+                            'https://png.pngitem.com/pimgs/s/649-6490124_katie-notopoulos-katienotopoulos-i-write-about-tech-round.png',
+                          ),
+                          radius: 64,
+                        )
+                      : CircleAvatar(
+                          backgroundImage: FileImage(
+                            image!,
+                          ),
+                          radius: 64,
+                        ),
                   Positioned(
                     bottom: -10,
                     left: 80,
                     child: IconButton(
-                      onPressed: () {},
+                      onPressed: selectImage,
                       icon: const Icon(Icons.add_a_photo),
                     ),
                   ),
@@ -61,7 +87,7 @@ class _UserInfomationScreenState extends State<UserInfomationScreen> {
                     ),
                   ),
                   IconButton(
-                    onPressed: () {},
+                    onPressed: storeUserData,
                     icon: const Icon(Icons.done),
                   ),
                 ],
