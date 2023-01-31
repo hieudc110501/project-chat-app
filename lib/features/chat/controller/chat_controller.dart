@@ -53,7 +53,7 @@ class ChatController {
         );
   }
 
-  //send message controller
+  //send file controller
   void sendFileMessage(
     BuildContext context,
     File file,
