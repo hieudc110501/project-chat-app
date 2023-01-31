@@ -29,15 +29,18 @@ class AuthController {
     required this.ref,
   });
 
+  //get current user
   Future<UserModel?> getUserData() async {
     UserModel? user = await authRepository.getCurrentUserData();
     return user;
   }
 
+  //sign in
   void signInWithPhone(BuildContext context, String phoneNumber) {
     authRepository.signInWithPhone(context, phoneNumber);
   }
 
+  //comparsion OTP
   void verifyOTP(BuildContext context, String verificationId, String userOTP) {
     authRepository.verifiOTP(
       context: context,
@@ -46,6 +49,7 @@ class AuthController {
     );
   }
 
+  //save user 
   void saveUserDataToFirebase(
       BuildContext context, String name, File? profilePic) {
     authRepository.saveUserDataToFirebase(
@@ -56,7 +60,13 @@ class AuthController {
     );
   }
 
+  //get user by id
   Stream<UserModel> userDataById(String userId) {
     return authRepository.userData(userId);
+  }
+
+  //change user status
+  void setUserState(bool isOnline) {
+    authRepository.setUserState(isOnline);
   }
 }

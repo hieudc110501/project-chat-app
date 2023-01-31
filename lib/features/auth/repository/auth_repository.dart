@@ -133,6 +133,7 @@ class AuthRepository {
     }
   }
 
+  //get user by id
   Stream<UserModel> userData(String userId) {
     return firestore.collection('users').doc(userId).snapshots().map(
           (event) => UserModel.fromMap(
@@ -140,5 +141,13 @@ class AuthRepository {
           ),
         );
   }
-  
+
+  //change user status
+  void setUserState(bool isOnline) async {
+    await firestore.collection('users').doc(auth.currentUser!.uid).update(
+      {
+        'isOnline': isOnline,
+      },
+    );
+  }
 }
