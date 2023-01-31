@@ -4,8 +4,8 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_chat_app/common/widgets/loader.dart';
 import 'package:flutter_chat_app/features/chat/controller/chat_controller.dart';
 import 'package:flutter_chat_app/models/message.dart';
-import 'package:flutter_chat_app/widgets/my_message_card.dart';
-import 'package:flutter_chat_app/widgets/sender_message_card.dart';
+import 'package:flutter_chat_app/features/chat/widgets/my_message_card.dart';
+import 'package:flutter_chat_app/features/chat/widgets/sender_message_card.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
@@ -56,11 +56,13 @@ class _ChatListState extends ConsumerState<ChatList> {
               return MyMessageCard(
                 message: messageData.text,
                 date: timeSent,
+                type: messageData.type,
               );
             }
             return SenderMessageCard(
               message: messageData.text,
               date: timeSent,
+              type: messageData.type,
             );
           },
         );
