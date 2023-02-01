@@ -60,12 +60,12 @@ class ChatRepository {
   }
 
   //get all message of one chat
-  Stream<List<Message>> getChatStream(String recieverUserId) {
+  Stream<List<Message>> getChatStream(String receiverUserId) {
     return firestore
         .collection('users')
         .doc(auth.currentUser!.uid)
         .collection('chats')
-        .doc(recieverUserId)
+        .doc(receiverUserId)
         .collection('messages')
         .orderBy('timeSent')
         .snapshots()
@@ -84,7 +84,7 @@ class ChatRepository {
     UserModel receiverUserData,
     String text,
     DateTime timeSent,
-    String recieverUserId,
+    String receiverUserId,
   ) async {
     //users -> reciever user id -> chats -> current user id -> set data
     var recieverChatContact = ChatContact(
@@ -96,7 +96,7 @@ class ChatRepository {
     );
     await firestore
         .collection('users')
-        .doc(recieverUserId)
+        .doc(receiverUserId)
         .collection('chats')
         .doc(auth.currentUser!.uid)
         .set(
@@ -115,7 +115,7 @@ class ChatRepository {
         .collection('users')
         .doc(auth.currentUser!.uid)
         .collection('chats')
-        .doc(recieverUserId)
+        .doc(receiverUserId)
         .set(
           senderChatContact.toMap(),
         );
@@ -123,7 +123,7 @@ class ChatRepository {
 
   //save message
   void _saveMessageToMessageSubcollection({
-    required String recieverUserId,
+    required String receiverUserId,
     required String text,
     required DateTime timeSent,
     required String messageId,
@@ -135,7 +135,7 @@ class ChatRepository {
   }) async {
     final message = Message(
       senderId: auth.currentUser!.uid,
-      recieverId: recieverUserId,
+      recieverId: receiverUserId,
       text: text,
       type: messageType,
       timeSent: timeSent,
@@ -155,7 +155,7 @@ class ChatRepository {
         .collection('users')
         .doc(auth.currentUser!.uid)
         .collection('chats')
-        .doc(recieverUserId)
+        .doc(receiverUserId)
         .collection('messages')
         .doc(messageId)
         .set(
@@ -165,7 +165,7 @@ class ChatRepository {
     //users -> reciever id  -> sender id -> messages -> message id -> store message
     await firestore
         .collection('users')
-        .doc(recieverUserId)
+        .doc(receiverUserId)
         .collection('chats')
         .doc(auth.currentUser!.uid)
         .collection('messages')
@@ -179,7 +179,7 @@ class ChatRepository {
   void sendTextMessage({
     required BuildContext context,
     required String text,
-    required String recieverUserId,
+    required String receiverUserId,
     required UserModel senderUser,
     required MessageReply? messageReply,
   }) async {
@@ -188,7 +188,7 @@ class ChatRepository {
       UserModel receiverUserData;
 
       var userDataMap =
-          await firestore.collection('users').doc(recieverUserId).get();
+          await firestore.collection('users').doc(receiverUserId).get();
       receiverUserData = UserModel.fromMap(userDataMap.data()!);
 
       var messageId = const Uuid().v1();
@@ -198,11 +198,11 @@ class ChatRepository {
         receiverUserData,
         text,
         timeSent,
-        recieverUserId,
+        receiverUserId,
       );
 
       _saveMessageToMessageSubcollection(
-        recieverUserId: recieverUserId,
+        receiverUserId: receiverUserId,
         text: text,
         timeSent: timeSent,
         messageType: MessageEnum.text,
@@ -221,7 +221,7 @@ class ChatRepository {
   void sendFileMessage({
     required BuildContext context,
     required File file,
-    required String recieverUserId,
+    required String receiverUserId,
     required UserModel senderUserData,
     required ProviderRef ref,
     required MessageEnum messageEnum,
@@ -235,14 +235,14 @@ class ChatRepository {
       String imageUrl = await ref
           .read(commonFirebaseStorageRepositoryProvider)
           .storeFileToFirebase(
-            'chat/${messageEnum.type}/${senderUserData.uid}/$recieverUserId/$messageId',
+            'chat/${messageEnum.type}/${senderUserData.uid}/$receiverUserId/$messageId',
             file,
           );
 
       //get receiver user
       UserModel receiverUserData;
       var userDataMap =
-          await firestore.collection('users').doc(recieverUserId).get();
+          await firestore.collection('users').doc(receiverUserId).get();
       receiverUserData = UserModel.fromMap(userDataMap.data()!);
 
       //show type of message
@@ -269,11 +269,11 @@ class ChatRepository {
         receiverUserData,
         contactMsg,
         timeSent,
-        recieverUserId,
+        receiverUserId,
       );
 
       _saveMessageToMessageSubcollection(
-        recieverUserId: recieverUserId,
+        receiverUserId: receiverUserId,
         text: imageUrl,
         timeSent: timeSent,
         messageId: messageId,
@@ -283,6 +283,39 @@ class ChatRepository {
         receiverUserName: receiverUserData.name,
         senderUsername: senderUserData.name,
       );
+    } catch (e) {
+      showSnackBar(context: context, content: e.toString());
+    }
+  }
+
+  //set message seen
+  void setChatMessageSeen(
+    BuildContext context,
+    String receiverUserId,
+    String messageId,
+  ) async {
+    try {
+    await firestore
+        .collection('users')
+        .doc(auth.currentUser!.uid)
+        .collection('chats')
+        .doc(receiverUserId)
+        .collection('messages')
+        .doc(messageId)
+        .update({
+          'isSeen': true,
+        });
+
+    await firestore
+        .collection('users')
+        .doc(receiverUserId)
+        .collection('chats')
+        .doc(auth.currentUser!.uid)
+        .collection('messages')
+        .doc(messageId)
+        .update({
+          'isSeen': true,
+        });
     } catch (e) {
       showSnackBar(context: context, content: e.toString());
     }

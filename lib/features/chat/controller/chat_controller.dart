@@ -42,14 +42,14 @@ class ChatController {
   void sendTextMessage(
     BuildContext context,
     String text,
-    String recieverUserId,
+    String receiverUserId,
   ) {
     final messageReply = ref.read(messageReplyProvider);
     ref.watch(userDataAuthProvider).whenData(
           (value) => chatRepository.sendTextMessage(
             context: context,
             text: text,
-            recieverUserId: recieverUserId,
+            receiverUserId: receiverUserId,
             senderUser: value!,
             messageReply: messageReply,
           ),
@@ -61,7 +61,7 @@ class ChatController {
   void sendFileMessage(
     BuildContext context,
     File file,
-    String recieverUserId,
+    String receiverUserId,
     MessageEnum messageEnum,
   ) {
     final messageReply = ref.read(messageReplyProvider);
@@ -69,7 +69,7 @@ class ChatController {
           (value) => chatRepository.sendFileMessage(
             context: context,
             file: file,
-            recieverUserId: recieverUserId,
+            receiverUserId: receiverUserId,
             senderUserData: value!,
             ref: ref,
             messageEnum: messageEnum,
@@ -77,5 +77,18 @@ class ChatController {
           ),
         );
     ref.read(messageReplyProvider.notifier).update((state) => null);
+  }
+
+  //set seen message
+  void setChatMessageSeen(
+    BuildContext context,
+    String receiverUserId,
+    String messageId,
+  ) {
+    chatRepository.setChatMessageSeen(
+      context,
+      receiverUserId,
+      messageId,
+    );
   }
 }
