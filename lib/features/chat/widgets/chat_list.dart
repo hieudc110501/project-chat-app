@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_chat_app/common/enum/message_enum.dart';
+import 'package:flutter_chat_app/common/providers/message_reply_provider.dart';
 import 'package:flutter_chat_app/common/widgets/loader.dart';
 import 'package:flutter_chat_app/features/chat/controller/chat_controller.dart';
 import 'package:flutter_chat_app/models/message.dart';
@@ -21,7 +23,6 @@ class ChatList extends ConsumerStatefulWidget {
 }
 
 class _ChatListState extends ConsumerState<ChatList> {
-
   final ScrollController messageController = ScrollController();
   @override
   void dispose() {
@@ -29,10 +30,26 @@ class _ChatListState extends ConsumerState<ChatList> {
     super.dispose();
   }
 
+  //if swipe message set state is not null
+  void onMessageSwipe(
+    String message,
+    bool isMe,
+    MessageEnum messageEnum,
+  ) {
+    ref.read(messageReplyProvider.notifier).update(
+          (state) => MessageReply(
+            message,
+            isMe,
+            messageEnum,
+          ),
+        );
+  }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<Message>>(
-      stream: ref.read(chatControllerProvider).chatStream(widget.receiverUserId),
+      stream:
+          ref.read(chatControllerProvider).chatStream(widget.receiverUserId),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Loader();
@@ -57,12 +74,28 @@ class _ChatListState extends ConsumerState<ChatList> {
                 message: messageData.text,
                 date: timeSent,
                 type: messageData.type,
+                repliedText: messageData.repliedMessage,
+                username: messageData.repliedTo,
+                repliedMessageType: messageData.repliedMessageType,
+                onLeftSwipe: () => onMessageSwipe(
+                  messageData.text,
+                  true,
+                  messageData.type,
+                ),
               );
             }
             return SenderMessageCard(
               message: messageData.text,
               date: timeSent,
               type: messageData.type,
+              repliedText: messageData.repliedMessage,
+              username: messageData.repliedTo,
+              repliedMessageType: messageData.repliedMessageType,
+              onRightSwipe: () => onMessageSwipe(
+                messageData.text,
+                false,
+                messageData.type,
+              ),
             );
           },
         );

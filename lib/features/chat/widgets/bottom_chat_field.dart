@@ -4,13 +4,14 @@ import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/colors.dart';
 import 'package:flutter_chat_app/common/enum/message_enum.dart';
+import 'package:flutter_chat_app/common/providers/message_reply_provider.dart';
 import 'package:flutter_chat_app/common/utils/utils.dart';
 import 'package:flutter_chat_app/features/chat/controller/chat_controller.dart';
+import 'package:flutter_chat_app/features/chat/widgets/message_reply_preview.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_sound/public/flutter_sound_recorder.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-
 
 class BottomChatField extends ConsumerStatefulWidget {
   final String recieverUserId;
@@ -75,7 +76,7 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
       //if has not init can't record
       if (!isRecorderInit) {
         return;
-      } 
+      }
       if (isRecording) {
         await _soundRecorder!.stopRecorder();
         sendFileMessage(File(path), MessageEnum.audio);
@@ -150,8 +151,12 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
 
   @override
   Widget build(BuildContext context) {
+    final messageReply = ref.watch(messageReplyProvider);
+    final isShowMessageReply = messageReply != null;
     return Column(
       children: [
+        //if user swipe message is show MessageReplyPreview
+        isShowMessageReply ? const MessageReplyPreview() : const SizedBox(),
         Row(
           children: [
             Expanded(
@@ -235,7 +240,11 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
                 child: GestureDetector(
                   onTap: sendTextMessage,
                   child: Icon(
-                    isShowSendButton ? Icons.send : isRecording ? Icons.close : Icons.mic,
+                    isShowSendButton
+                        ? Icons.send
+                        : isRecording
+                            ? Icons.close
+                            : Icons.mic,
                     color: Colors.white,
                   ),
                 ),

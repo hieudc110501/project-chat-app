@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/common/enum/message_enum.dart';
+import 'package:flutter_chat_app/common/providers/message_reply_provider.dart';
 import 'package:flutter_chat_app/features/auth/controller/auth_controller.dart';
 import 'package:flutter_chat_app/models/chat_contact.dart';
 import 'package:flutter_chat_app/models/message.dart';
@@ -43,14 +44,17 @@ class ChatController {
     String text,
     String recieverUserId,
   ) {
+    final messageReply = ref.read(messageReplyProvider);
     ref.watch(userDataAuthProvider).whenData(
           (value) => chatRepository.sendTextMessage(
             context: context,
             text: text,
             recieverUserId: recieverUserId,
             senderUser: value!,
+            messageReply: messageReply,
           ),
         );
+    ref.read(messageReplyProvider.notifier).update((state) => null);
   }
 
   //send file controller
@@ -60,15 +64,18 @@ class ChatController {
     String recieverUserId,
     MessageEnum messageEnum,
   ) {
+    final messageReply = ref.read(messageReplyProvider);
     ref.watch(userDataAuthProvider).whenData(
           (value) => chatRepository.sendFileMessage(
             context: context,
             file: file,
             recieverUserId: recieverUserId,
             senderUserData: value!,
-            messageEnum: messageEnum,
             ref: ref,
+            messageEnum: messageEnum,
+            messageReply: messageReply,
           ),
         );
+    ref.read(messageReplyProvider.notifier).update((state) => null);
   }
 }
