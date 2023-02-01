@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/colors.dart';
 import 'package:flutter_chat_app/common/utils/utils.dart';
 import 'package:flutter_chat_app/features/auth/controller/auth_controller.dart';
+import 'package:flutter_chat_app/features/group/screens/create_group_screen.dart';
 import 'package:flutter_chat_app/features/select_contacts/screens/select_contact_screen.dart';
 import 'package:flutter_chat_app/features/chat/widgets/contacts_list.dart';
 import 'package:flutter_chat_app/features/status/screens/confirm_status_screen.dart';
@@ -81,7 +82,10 @@ class _MobileLayoutScreenState extends ConsumerState<MobileLayoutScreen>
                   child: const Text(
                     'Create Group',
                   ),
-                  onTap: () {},
+                  onTap: () => Future(
+                    () => Navigator.pushNamed(
+                        context, CreateGroupScreen.routeName),
+                  ),
                 ),
               ],
             ),

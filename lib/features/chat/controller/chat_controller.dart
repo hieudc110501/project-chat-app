@@ -6,6 +6,7 @@ import 'package:flutter_chat_app/common/enum/message_enum.dart';
 import 'package:flutter_chat_app/common/providers/message_reply_provider.dart';
 import 'package:flutter_chat_app/features/auth/controller/auth_controller.dart';
 import 'package:flutter_chat_app/models/chat_contact.dart';
+import 'package:flutter_chat_app/models/group.dart';
 import 'package:flutter_chat_app/models/message.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -31,6 +32,11 @@ class ChatController {
   // get all chat contacts controller
   Stream<List<ChatContact>> chatContacts() {
     return chatRepository.getChatContacts();
+  }
+
+  // get all chat contacts controller
+  Stream<List<GroupContact>> chatGroups() {
+    return chatRepository.getChatGroups();
   }
 
   //get all messages
