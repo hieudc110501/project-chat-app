@@ -39,9 +39,14 @@ class ChatController {
     return chatRepository.getChatGroups();
   }
 
-  //get all messages
+  //get all messages of person chat
   Stream<List<Message>> chatStream(String receiverUserId) {
     return chatRepository.getChatStream(receiverUserId);
+  }
+
+  //get all messages of group chat
+  Stream<List<Message>> groupChatStream(String groupId) {
+    return chatRepository.getGroupChatStream(groupId);
   }
 
   //send message controller
@@ -49,6 +54,7 @@ class ChatController {
     BuildContext context,
     String text,
     String receiverUserId,
+    bool isGroupChat,
   ) {
     final messageReply = ref.read(messageReplyProvider);
     ref.watch(userDataAuthProvider).whenData(
@@ -58,6 +64,7 @@ class ChatController {
             receiverUserId: receiverUserId,
             senderUser: value!,
             messageReply: messageReply,
+            isGroupChat: isGroupChat
           ),
         );
     ref.read(messageReplyProvider.notifier).update((state) => null);
@@ -69,6 +76,7 @@ class ChatController {
     File file,
     String receiverUserId,
     MessageEnum messageEnum,
+    bool isGroupChat,
   ) {
     final messageReply = ref.read(messageReplyProvider);
     ref.watch(userDataAuthProvider).whenData(
@@ -80,6 +88,7 @@ class ChatController {
             ref: ref,
             messageEnum: messageEnum,
             messageReply: messageReply,
+            isGroupChat: isGroupChat,
           ),
         );
     ref.read(messageReplyProvider.notifier).update((state) => null);
