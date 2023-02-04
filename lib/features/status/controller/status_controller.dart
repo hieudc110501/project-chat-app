@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/features/auth/controller/auth_controller.dart';
 import 'package:flutter_chat_app/models/status_model.dart';
+import 'package:flutter_chat_app/models/user_status.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:flutter_chat_app/features/status/repository/status_repositority.dart';
@@ -36,8 +37,15 @@ class StatusController {
     });
   }
 
-  Future<List<Status>> getStatus(BuildContext context) async {
-    List<Status> statuses = await statusRepository.getStatus(context);
+  //get status by id
+  Future<List<Status>> getStatusByUid(BuildContext context, String uid) async {
+    List<Status> statuses = await statusRepository.getStatusByUid(context, uid);
     return statuses;
   }
+
+  //get all users have status in 24 hours
+  Stream<List<UserStatus>> getStatusContacts() {
+    return statusRepository.getStatusContacts();
+  }
+
 }

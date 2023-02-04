@@ -10,7 +10,7 @@ import 'package:flutter_chat_app/features/select_contacts/screens/select_contact
 import 'package:flutter_chat_app/features/chat/screens/mobile_chat_screen.dart';
 import 'package:flutter_chat_app/features/status/screens/confirm_status_screen.dart';
 import 'package:flutter_chat_app/features/status/screens/status_screen.dart';
-import 'package:flutter_chat_app/models/status_model.dart';
+import 'package:flutter_chat_app/models/user_status.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
@@ -38,11 +38,13 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       final name = arguments['name'];
       final uid = arguments['uid'];
       final isGroupChat = arguments['isGroupChat'];
+      final profilePic = arguments['profilePic'];
       return MaterialPageRoute(
         builder: (context) => MobileChatScreen(
           name: name,
           uid: uid,
           isGroupChat: isGroupChat,
+          profilePic: profilePic,
         ),
       );
     case ConfirmStatusScreen.routeName:
@@ -53,10 +55,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         ),
       );
     case StatusScreen.routeName:
-      final status = settings.arguments as Status;
+      final userStatus = settings.arguments as UserStatus;
       return MaterialPageRoute(
         builder: (context) => StatusScreen(
-          status: status,
+          userStatus: userStatus,
         ),
       );
     case CreateGroupScreen.routeName:

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/colors.dart';
 import 'package:flutter_chat_app/common/widgets/loader.dart';
 import 'package:flutter_chat_app/features/auth/controller/auth_controller.dart';
+import 'package:flutter_chat_app/features/call/controller/call_controller.dart';
 import 'package:flutter_chat_app/features/chat/widgets/bottom_chat_field.dart';
 import 'package:flutter_chat_app/models/user_model.dart';
 import 'package:flutter_chat_app/features/chat/widgets/chat_list.dart';
@@ -12,12 +13,24 @@ class MobileChatScreen extends ConsumerWidget {
   final String name;
   final String uid;
   final bool isGroupChat;
+  final String profilePic;
   const MobileChatScreen({
     Key? key,
     required this.name,
     required this.uid,
     required this.isGroupChat,
+    required this.profilePic,
   }) : super(key: key);
+
+  void makeCall(WidgetRef ref, BuildContext context) {
+    ref.read(callControllerProvider).makeCall(
+          context,
+          name,
+          uid,
+          profilePic,
+          isGroupChat,
+        );
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

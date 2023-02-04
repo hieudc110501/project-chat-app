@@ -45,6 +45,7 @@ class ChatRepository {
             .collection('users')
             .doc(chatContact.contactId)
             .get();
+          
         var user = UserModel.fromMap(userData.data()!);
         contacts.add(
           ChatContact(
@@ -52,6 +53,7 @@ class ChatRepository {
             profilePic: user.profilePic,
             contactId: chatContact.contactId,
             timeSent: chatContact.timeSent,
+            isOnline: user.isOnline,
             lastMessage: chatContact.lastMessage,
           ),
         );

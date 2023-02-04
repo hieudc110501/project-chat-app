@@ -3,7 +3,7 @@ import 'package:flutter_chat_app/colors.dart';
 import 'package:flutter_chat_app/common/widgets/loader.dart';
 import 'package:flutter_chat_app/features/status/controller/status_controller.dart';
 import 'package:flutter_chat_app/features/status/screens/status_screen.dart';
-import 'package:flutter_chat_app/models/status_model.dart';
+import 'package:flutter_chat_app/models/user_status.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class StatusContactScreen extends ConsumerWidget {
@@ -11,8 +11,8 @@ class StatusContactScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return FutureBuilder<List<Status>>(
-      future: ref.read(statusControllerProvider).getStatus(context),
+    return StreamBuilder<List<UserStatus>>(
+      stream: ref.read(statusControllerProvider).getStatusContacts(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Loader();
@@ -20,7 +20,7 @@ class StatusContactScreen extends ConsumerWidget {
         return ListView.builder(
           itemCount: snapshot.data!.length,
           itemBuilder: (context, index) {
-            var statusData = snapshot.data![index];
+            var userStatus = snapshot.data![index];
             return Column(
               children: [
                 InkWell(
@@ -28,18 +28,18 @@ class StatusContactScreen extends ConsumerWidget {
                     Navigator.pushNamed(
                       context,
                       StatusScreen.routeName,
-                      arguments: statusData,
+                      arguments: userStatus,
                     );
                   },
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 8.0),
                     child: ListTile(
                       title: Text(
-                        statusData.username,
+                        userStatus.name,
                       ),
                       leading: CircleAvatar(
                         backgroundImage: NetworkImage(
-                          statusData.profilePic,
+                          userStatus.profilePic,
                         ),
                         radius: 30,
                       ),

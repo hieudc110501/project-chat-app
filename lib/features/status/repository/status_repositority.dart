@@ -9,6 +9,7 @@ import 'package:flutter_chat_app/common/repositories/common_firebase_storage_rep
 import 'package:flutter_chat_app/common/utils/utils.dart';
 import 'package:flutter_chat_app/models/status_model.dart';
 import 'package:flutter_chat_app/models/user_model.dart';
+import 'package:flutter_chat_app/models/user_status.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
@@ -30,6 +31,9 @@ class StatusRepository {
     required this.auth,
     required this.ref,
   });
+
+  //save user in status
+  void saveUserToStatus() {}
 
   //upload status
   void uploadStatus({
@@ -73,29 +77,8 @@ class StatusRepository {
         }
       }
 
-      //get status of current user
       List<String> statusImageUrls = [];
-      var statusesSnapshot = await firestore
-          .collection('status')
-          .where('uid', isEqualTo: auth.currentUser!.uid)
-          .get();
-
-      //if status has data add
-      if (statusesSnapshot.docChanges.isNotEmpty) {
-        Status status = Status.fromMap(statusesSnapshot.docs[0].data());
-        statusImageUrls = status.photoUrl;
-        statusImageUrls.add(imageUrl);
-        await firestore
-            .collection('status')
-            .doc(statusesSnapshot.docs[0].id)
-            .update({
-          'photoUrl': statusImageUrls,
-        });
-        return;
-      } else {
-        statusImageUrls = [imageUrl];
-      }
-
+      statusImageUrls = [imageUrl];
       Status status = Status(
         uid: uid,
         username: username,
@@ -107,42 +90,72 @@ class StatusRepository {
         whoCanSee: uidWhoCanSee,
       );
 
+      UserStatus userStatus = UserStatus(
+        name: username,
+        uid: uid,
+        profilePic: profilePic,
+        phoneNumber: phoneNumber,
+        lastTimeStatus: DateTime.now(),
+      );
+
       //add status to firebase
-      await firestore.collection('status').doc(statusId).set(status.toMap());
+      await firestore.collection('status').doc(uid).set(userStatus.toMap());
+
+      //add status to firebase
+      await firestore
+          .collection('status')
+          .doc(uid)
+          .collection('statuses')
+          .doc(statusId)
+          .set(status.toMap());
     } catch (e) {
       showSnackBar(context: context, content: e.toString());
     }
   }
 
-  //get status
-  Future<List<Status>> getStatus(BuildContext context) async {
+  //get all contacts have status in 24 hours
+  Stream<List<UserStatus>> getStatusContacts() {
+    return firestore
+        .collection('status')
+        .where(
+          'lastTimeStatus',
+          isGreaterThan: DateTime.now()
+              .subtract(const Duration(hours: 24))
+              .millisecondsSinceEpoch,
+        )
+        .snapshots()
+        .asyncMap((event) async {
+      List<UserStatus> contacts = [];
+      for (var document in event.docs) {
+        var userStatus = UserStatus.fromMap(document.data());
+        contacts.add(userStatus);
+      }
+      return contacts;
+    });
+  }
+
+  //get status by id
+  Future<List<Status>> getStatusByUid(
+    BuildContext context,
+    String uid,
+  ) async {
     List<Status> statusData = [];
     try {
-      //get all contacts in device
-      List<Contact> contacts = [];
-      if (await FlutterContacts.requestPermission()) {
-        contacts = await FlutterContacts.getContacts(withProperties: true);
-      }
-      for (int i = 0; i < contacts.length; i++) {
-        var statusesSnapshot = await firestore
-            .collection('status')
-            .where(
-              'phoneNumber',
-              isEqualTo: contacts[i].phones[0].number.replaceAll(' ', ''),
-            )
-            .where(
-              'createdAt',
-              isGreaterThan: DateTime.now()
-                  .subtract(const Duration(hours: 24))
-                  .millisecondsSinceEpoch,
-            )
-            .get();
-        for (var tempData in statusesSnapshot.docs) {
-          Status tempStatus = Status.fromMap(tempData.data());
-          if (tempStatus.whoCanSee.contains(auth.currentUser!.uid)) {
-            statusData.add(tempStatus);
-          }
-        }
+      var statusesSnapshot = await firestore
+          .collection('status')
+          .doc(uid)
+          .collection('statuses')
+          .where(
+            'createdAt',
+            isGreaterThan: DateTime.now()
+                .subtract(const Duration(hours: 24))
+                .millisecondsSinceEpoch,
+          )
+          .get();
+
+      for (var tempData in statusesSnapshot.docs) {
+        Status tempStatus = Status.fromMap(tempData.data());
+        statusData.add(tempStatus);
       }
     } catch (e) {
       if (kDebugMode) print(e);

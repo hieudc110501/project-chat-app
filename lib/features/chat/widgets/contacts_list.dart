@@ -4,6 +4,7 @@ import 'package:flutter_chat_app/common/utils/utils.dart';
 import 'package:flutter_chat_app/common/widgets/loader.dart';
 import 'package:flutter_chat_app/features/chat/controller/chat_controller.dart';
 import 'package:flutter_chat_app/features/chat/screens/mobile_chat_screen.dart';
+import 'package:flutter_chat_app/features/chat/widgets/user_status_activity.dart';
 import 'package:flutter_chat_app/models/chat_contact.dart';
 import 'package:flutter_chat_app/models/group.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -40,6 +41,7 @@ class ContactsList extends ConsumerWidget {
                                   'name': groupData.name,
                                   'uid': groupData.groupId,
                                   'isGroupChat': true,
+                                  'profilePic': groupData.groupPic,
                                 });
                           },
                           child: Padding(
@@ -58,15 +60,11 @@ class ContactsList extends ConsumerWidget {
                                   style: const TextStyle(fontSize: 15),
                                 ),
                               ),
-                              leading: CircleAvatar(
-                                backgroundImage: NetworkImage(
-                                  groupData.groupPic,
-                                ),
-                                radius: 30,
-                              ),
+                              leading: UserStatusActivity(
+                                  imageUrl: groupData.groupPic,
+                                  isOnline: false),
                               trailing: Text(
-                                DateFormat.Hm()
-                                    .format(groupData.timeSent),
+                                DateFormat.Hm().format(groupData.timeSent),
                                 style: const TextStyle(
                                   color: Colors.grey,
                                   fontSize: 13,
@@ -103,6 +101,7 @@ class ContactsList extends ConsumerWidget {
                                   'name': chatContactData.name,
                                   'uid': chatContactData.contactId,
                                   'isGroupChat': false,
+                                  'profilePic': chatContactData.profilePic,
                                 });
                           },
                           child: Padding(
@@ -121,12 +120,9 @@ class ContactsList extends ConsumerWidget {
                                   style: const TextStyle(fontSize: 15),
                                 ),
                               ),
-                              leading: CircleAvatar(
-                                backgroundImage: NetworkImage(
-                                  chatContactData.profilePic,
-                                ),
-                                radius: 30,
-                              ),
+                              leading: UserStatusActivity(
+                                  imageUrl: chatContactData.profilePic,
+                                  isOnline: chatContactData.isOnline!),
                               trailing: Text(
                                 DateFormat.Hm()
                                     .format(chatContactData.timeSent),
