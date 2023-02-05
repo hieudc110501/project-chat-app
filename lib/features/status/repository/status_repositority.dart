@@ -55,27 +55,27 @@ class StatusRepository {
           );
 
       //get all contacts in device
-      List<Contact> contacts = [];
-      if (await FlutterContacts.requestPermission()) {
-        contacts = await FlutterContacts.getContacts(withProperties: true);
-      }
+      // List<Contact> contacts = [];
+      // if (await FlutterContacts.requestPermission()) {
+      //   contacts = await FlutterContacts.getContacts(withProperties: true);
+      // }
 
       //check contacts in device equals in firebase
       List<String> uidWhoCanSee = [];
-      for (int i = 0; i < contacts.length; i++) {
-        var userDataFirebase = await firestore
-            .collection('users')
-            .where(
-              'phoneNumber',
-              isEqualTo: contacts[i].phones[0].number.replaceAll(' ', ''),
-            )
-            .get();
-        //showSnackBar(context: context, content: userDataFirebase.size.toString());
-        if (userDataFirebase.docs.isNotEmpty) {
-          var userData = UserModel.fromMap(userDataFirebase.docs[0].data());
-          uidWhoCanSee.add(userData.uid);
-        }
-      }
+      // for (int i = 0; i < contacts.length; i++) {
+      //   var userDataFirebase = await firestore
+      //       .collection('users')
+      //       .where(
+      //         'phoneNumber',
+      //         isEqualTo: contacts[i].phones[0].number.replaceAll(' ', ''),
+      //       )
+      //       .get();
+      //   //showSnackBar(context: context, content: userDataFirebase.size.toString());
+      //   if (userDataFirebase.docs.isNotEmpty) {
+      //     var userData = UserModel.fromMap(userDataFirebase.docs[0].data());
+      //     uidWhoCanSee.add(userData.uid);
+      //   }
+      // }
 
       List<String> statusImageUrls = [];
       statusImageUrls = [imageUrl];

@@ -35,22 +35,28 @@ class SearchScreen extends HookConsumerWidget {
                   child: TextField(
                     controller: controller,
                     decoration: InputDecoration(
-                      hintText: 'Enter...',
+                      constraints: const BoxConstraints(
+                        maxHeight: 40,
+                      ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
-                      suffixIcon: IconButton(
-                        onPressed: () {
-                          controller.clear();
-                        },
-                        icon: const Icon(Icons.clear),
-                      ),
+                      suffixIcon: controller.text.isNotEmpty
+                          ? IconButton(
+                              onPressed: () {
+                                controller.clear();
+                              },
+                              icon: const Icon(Icons.clear),
+                            )
+                          : null,
                     ),
                   ),
                 ),
               ],
             ),
-            Flexible(child: ShowSearchView(name: searchTerm.value)),
+            Flexible(
+              child: ShowSearchView(name: searchTerm.value),
+            ),
           ],
         ),
       ),

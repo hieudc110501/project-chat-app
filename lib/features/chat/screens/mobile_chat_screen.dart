@@ -1,16 +1,17 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:flutter_chat_app/colors.dart';
 import 'package:flutter_chat_app/common/widgets/loader.dart';
 import 'package:flutter_chat_app/features/auth/controller/auth_controller.dart';
 import 'package:flutter_chat_app/features/call/controller/call_controller.dart';
 import 'package:flutter_chat_app/features/chat/controller/chat_controller.dart';
 import 'package:flutter_chat_app/features/chat/widgets/bottom_chat_field.dart';
+import 'package:flutter_chat_app/features/chat/widgets/chat_list.dart';
 import 'package:flutter_chat_app/features/chat/widgets/user_status_activity.dart';
-import 'package:flutter_chat_app/models/chat_contact.dart';
 import 'package:flutter_chat_app/models/group.dart';
 import 'package:flutter_chat_app/models/user_model.dart';
-import 'package:flutter_chat_app/features/chat/widgets/chat_list.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class MobileChatScreen extends ConsumerWidget {
   static const String routeName = '/mobile-chat-screen';
@@ -56,7 +57,9 @@ class MobileChatScreen extends ConsumerWidget {
                         isGroup: true,
                         size: 36,
                       ),
-                      const SizedBox(width: 10,),
+                      const SizedBox(
+                        width: 10,
+                      ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -90,7 +93,9 @@ class MobileChatScreen extends ConsumerWidget {
                         isGroup: false,
                         size: 36,
                       ),
-                      const SizedBox(width: 10,),
+                      const SizedBox(
+                        width: 10,
+                      ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [

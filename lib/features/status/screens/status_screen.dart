@@ -47,23 +47,14 @@ class _StatusScreenState extends ConsumerState<StatusScreen> {
             ),
           );
         }
-        return Stack(
-          children: [
-            const Positioned(
-              height: 50,
-              width: 100,
-              child: Text('hsadsadsadsa'),
-            ),
-            StoryView(
-              storyItems: storyItems,
-              controller: controller,
-              onVerticalSwipeComplete: (direction) {
-                if (direction == Direction.down) {
-                  Navigator.pop(context);
-                }
-              },
-            ),
-          ],
+        return StoryView(
+          storyItems: storyItems,
+          controller: controller,
+          onVerticalSwipeComplete: (direction) {
+            if (direction == Direction.down) {
+              Navigator.pop(context);
+            }
+          },
         );
       },
     );
