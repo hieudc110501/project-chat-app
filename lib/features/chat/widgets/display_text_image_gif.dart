@@ -16,51 +16,50 @@ class DisplayTextImageGIF extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isPlaying = false;
-    final AudioPlayer  audioPlayer = AudioPlayer();
+    final AudioPlayer audioPlayer = AudioPlayer();
     return type == MessageEnum.text
         ? Container(
-          constraints: const BoxConstraints(
-            minWidth: 40,
-          ),
-          child: Text(
+            constraints: const BoxConstraints(
+              minWidth: 40,
+            ),
+            child: Text(
               message,
               style: const TextStyle(
                 fontSize: 16,
               ),
             ),
-        )
+          )
         : type == MessageEnum.audio
-            ? StatefulBuilder(
-              builder: (context, setState) {
+            ? StatefulBuilder(builder: (context, setState) {
                 return IconButton(
                   constraints: const BoxConstraints(
                     minWidth: 100,
                   ),
-                    onPressed: () async {
-                      if (isPlaying) {
-                        await audioPlayer.pause();
-                        //only rebuild StatefulBuilder not the Widget Tree
-                        setState(() {
-                          isPlaying = false;
-                        });
-                      } else {
-                        await audioPlayer.play(UrlSource(message));
-                        setState(() {
-                          isPlaying = true;
-                        });
-                      }
-                    },
-                    icon: Icon(
-                      isPlaying ? Icons.pause_circle : Icons.play_circle,
-                    ),
-                  );
-              }
-            )
+                  onPressed: () async {
+                    if (isPlaying) {
+                      await audioPlayer.pause();
+                      //only rebuild StatefulBuilder not the Widget Tree
+                      setState(() {
+                        isPlaying = false;
+                      });
+                    } else {
+                      await audioPlayer.play(UrlSource(message));
+                      setState(() {
+                        isPlaying = true;
+                      });
+                    }
+                  },
+                  icon: Icon(
+                    isPlaying ? Icons.pause_circle : Icons.play_circle,
+                  ),
+                );
+              })
             : type == MessageEnum.video
                 ? VideoPlayerItem(
                     videoUrl: message,
                   )
                 : CachedNetworkImage(
+                    width: 150,
                     imageUrl: message,
                   );
   }

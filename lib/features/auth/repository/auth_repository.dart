@@ -151,4 +151,23 @@ class AuthRepository {
       },
     );
   }
+
+  //search user
+  Stream<List<UserModel>> searchUser(String name) {
+    return firestore
+        .collection('users')
+        .snapshots()
+        .asyncMap(
+      (event) {
+        List<UserModel> users = [];
+        for (var data in event.docs) {
+          var user = UserModel.fromMap(data.data());
+          if (user.name.toLowerCase().contains(name.toLowerCase())) {
+             users.add(user);
+          }
+        }
+        return users;
+      },
+    );
+  }
 }

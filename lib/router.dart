@@ -11,6 +11,7 @@ import 'package:flutter_chat_app/features/chat/screens/mobile_chat_screen.dart';
 import 'package:flutter_chat_app/features/status/screens/confirm_status_screen.dart';
 import 'package:flutter_chat_app/features/status/screens/status_screen.dart';
 import 'package:flutter_chat_app/models/user_status.dart';
+import 'package:flutter_chat_app/screens/search_screen.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
@@ -64,6 +65,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case CreateGroupScreen.routeName:
       return MaterialPageRoute(
         builder: (context) => const CreateGroupScreen(),
+      );
+    case SearchScreen.routeName:
+      return MaterialPageRoute(
+        builder: (context) => const SearchScreen(),
       );
     default:
       return MaterialPageRoute(

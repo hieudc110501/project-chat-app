@@ -69,4 +69,9 @@ class AuthController {
   void setUserState(bool isOnline) {
     authRepository.setUserState(isOnline);
   }
+
+  //search users
+  Stream<List<UserModel>> searchUser(String name) {
+    return authRepository.searchUser(name);
+  }
 }

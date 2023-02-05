@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/colors.dart';
-import 'package:flutter_chat_app/common/utils/utils.dart';
 import 'package:flutter_chat_app/common/widgets/loader.dart';
 import 'package:flutter_chat_app/features/chat/controller/chat_controller.dart';
 import 'package:flutter_chat_app/features/chat/screens/mobile_chat_screen.dart';
@@ -61,8 +60,10 @@ class ContactsList extends ConsumerWidget {
                                 ),
                               ),
                               leading: UserStatusActivity(
-                                  imageUrl: groupData.groupPic,
-                                  isOnline: false),
+                                uid: groupData.groupId,
+                                isGroup: true,
+                                size: 50,
+                              ),
                               trailing: Text(
                                 DateFormat.Hm().format(groupData.timeSent),
                                 style: const TextStyle(
@@ -121,8 +122,10 @@ class ContactsList extends ConsumerWidget {
                                 ),
                               ),
                               leading: UserStatusActivity(
-                                  imageUrl: chatContactData.profilePic,
-                                  isOnline: chatContactData.isOnline!),
+                                  uid: chatContactData.contactId,
+                                  isGroup: false,
+                                  size: 50,
+                                ),
                               trailing: Text(
                                 DateFormat.Hm()
                                     .format(chatContactData.timeSent),

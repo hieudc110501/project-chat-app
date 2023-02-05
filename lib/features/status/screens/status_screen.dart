@@ -1,7 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_app/common/utils/utils.dart';
 import 'package:flutter_chat_app/common/widgets/loader.dart';
 import 'package:flutter_chat_app/features/status/controller/status_controller.dart';
 import 'package:flutter_chat_app/models/status_model.dart';
@@ -48,14 +47,23 @@ class _StatusScreenState extends ConsumerState<StatusScreen> {
             ),
           );
         }
-        return StoryView(
-          storyItems: storyItems,
-          controller: controller,
-          onVerticalSwipeComplete: (direction) {
+        return Stack(
+          children: [
+            const Positioned(
+              height: 50,
+              width: 100,
+              child: Text('hsadsadsadsa'),
+            ),
+            StoryView(
+              storyItems: storyItems,
+              controller: controller,
+              onVerticalSwipeComplete: (direction) {
                 if (direction == Direction.down) {
                   Navigator.pop(context);
                 }
               },
+            ),
+          ],
         );
       },
     );

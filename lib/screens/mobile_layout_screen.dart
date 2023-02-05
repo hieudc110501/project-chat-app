@@ -9,6 +9,7 @@ import 'package:flutter_chat_app/features/select_contacts/screens/select_contact
 import 'package:flutter_chat_app/features/chat/widgets/contacts_list.dart';
 import 'package:flutter_chat_app/features/status/screens/confirm_status_screen.dart';
 import 'package:flutter_chat_app/features/status/screens/status_contact_screen.dart';
+import 'package:flutter_chat_app/screens/search_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class MobileLayoutScreen extends ConsumerStatefulWidget {
@@ -24,6 +25,7 @@ class _MobileLayoutScreenState extends ConsumerState<MobileLayoutScreen>
   @override
   void initState() {
     super.initState();
+    ref.read(authControllerProvider).setUserState(true);
     tabBarController = TabController(length: 3, vsync: this);
     WidgetsBinding.instance.addObserver(this);
   }
@@ -70,7 +72,9 @@ class _MobileLayoutScreenState extends ConsumerState<MobileLayoutScreen>
           actions: [
             IconButton(
               icon: const Icon(Icons.search, color: Colors.grey),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, SearchScreen.routeName);
+              },
             ),
             PopupMenuButton(
               icon: const Icon(
@@ -104,7 +108,7 @@ class _MobileLayoutScreenState extends ConsumerState<MobileLayoutScreen>
                 text: 'CHATS',
               ),
               Tab(
-                text: 'STATUS',
+                text: 'STORY',
               ),
               Tab(
                 text: 'CALLS',

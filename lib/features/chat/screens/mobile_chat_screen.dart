@@ -3,7 +3,11 @@ import 'package:flutter_chat_app/colors.dart';
 import 'package:flutter_chat_app/common/widgets/loader.dart';
 import 'package:flutter_chat_app/features/auth/controller/auth_controller.dart';
 import 'package:flutter_chat_app/features/call/controller/call_controller.dart';
+import 'package:flutter_chat_app/features/chat/controller/chat_controller.dart';
 import 'package:flutter_chat_app/features/chat/widgets/bottom_chat_field.dart';
+import 'package:flutter_chat_app/features/chat/widgets/user_status_activity.dart';
+import 'package:flutter_chat_app/models/chat_contact.dart';
+import 'package:flutter_chat_app/models/group.dart';
 import 'package:flutter_chat_app/models/user_model.dart';
 import 'package:flutter_chat_app/features/chat/widgets/chat_list.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -36,25 +40,72 @@ class MobileChatScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: appBarColor,
+        backgroundColor: backgroundColor,
+        elevation: 0,
         title: isGroupChat
-            ? Text(name)
+            ? StreamBuilder<GroupContact>(
+                stream: ref.read(chatControllerProvider).getChatGroupById(uid),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Loader();
+                  }
+                  return Row(
+                    children: [
+                      UserStatusActivity(
+                        uid: uid,
+                        isGroup: true,
+                        size: 36,
+                      ),
+                      const SizedBox(width: 10,),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            name.length > 11 ? name.split(' ').last : name,
+                            style: const TextStyle(fontSize: 15),
+                          ),
+                          const Text(
+                            'online',
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.normal,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  );
+                },
+              )
             : StreamBuilder<UserModel>(
                 stream: ref.read(authControllerProvider).userDataById(uid),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Loader();
                   }
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  return Row(
                     children: [
-                      Text(name),
-                      Text(
-                        snapshot.data!.isOnline ? 'online' : 'offline',
-                        style: const TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.normal,
-                        ),
+                      UserStatusActivity(
+                        uid: uid,
+                        isGroup: false,
+                        size: 36,
+                      ),
+                      const SizedBox(width: 10,),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            name.length > 11 ? name.split(' ').last : name,
+                            style: const TextStyle(fontSize: 15),
+                          ),
+                          Text(
+                            snapshot.data!.isOnline ? 'online' : 'offline',
+                            style: const TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.normal,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   );

@@ -39,6 +39,11 @@ class ChatController {
     return chatRepository.getChatGroups();
   }
 
+  // get all chat group by id controller
+  Stream<GroupContact> getChatGroupById(String groupId) {
+    return chatRepository.getChatGroupById(groupId);
+  }
+
   //get all messages of person chat
   Stream<List<Message>> chatStream(String receiverUserId) {
     return chatRepository.getChatStream(receiverUserId);

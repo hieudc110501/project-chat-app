@@ -94,6 +94,7 @@ class _ChatListState extends ConsumerState<ChatList> {
               );
             }
             return SenderMessageCard(
+              uid: widget.receiverUserId,
               message: messageData.text,
               date: timeSent,
               type: messageData.type,

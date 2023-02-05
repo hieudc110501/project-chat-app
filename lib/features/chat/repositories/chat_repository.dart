@@ -45,7 +45,7 @@ class ChatRepository {
             .collection('users')
             .doc(chatContact.contactId)
             .get();
-          
+
         var user = UserModel.fromMap(userData.data()!);
         contacts.add(
           ChatContact(
@@ -74,6 +74,15 @@ class ChatRepository {
       }
       return groups;
     });
+  }
+
+  //get chat groups
+  Stream<GroupContact> getChatGroupById(String groupId) {
+    return firestore.collection('groups').doc(groupId).snapshots().map(
+          (event) => GroupContact.fromMap(
+            event.data()!,
+          ),
+        );
   }
 
   //get all message of one chat
