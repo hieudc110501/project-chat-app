@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/colors.dart';
 import 'package:flutter_chat_app/common/enum/message_enum.dart';
@@ -12,14 +14,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_sound/public/flutter_sound_recorder.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:http/http.dart' as http;
 
 class BottomChatField extends ConsumerStatefulWidget {
   final String recieverUserId;
   final bool isGroupChat;
+  final String token;
   const BottomChatField({
     super.key,
     required this.recieverUserId,
     required this.isGroupChat,
+    required this.token,
   });
 
   @override
@@ -50,6 +55,50 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
     super.dispose();
   }
 
+  //send message
+  void sendPushMessage(
+    String token,
+    String body,
+    String title,
+    String uid,
+  ) async {
+    try {
+      var url = 'https://fcm.googleapis.com/fcm/send';
+      var headers = {
+        'Content-Type': 'application/json',
+        'Authorization':
+            'key=AAAA8QNDDM0:APA91bGLIV1gCauwUsZ_JDr55CZQoNYIbSk3RVI1AKJnZHuoWAVxYyBAJKNQ8KV4K_lLkDYhapRNrh6GzI7VJyfm3nESmFo9J4ZEjOn5L26xixOiYDT7pMiXTKPPDqTgMGcVxY9dAc-S',
+      };
+      var bodys = {
+        'priority': 'high',
+        'data': {
+          'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+          'status': 'done',
+          'body': body,
+          'title': title,
+          'uid': uid,
+        },
+        'notification': {
+          'title': title,
+          'body': body,
+          'android_channel_id': 'dbfood',
+        },
+        'to': token,
+      };
+      var response = await http.post(Uri.parse(url),
+          headers: headers, body: json.encode(bodys));
+      if (response.statusCode == 200) {
+        print('Push notification sent successfully');
+      } else {
+        print('Failed to send push notification');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('error push notification');
+      }
+    }
+  }
+
   //open record
   void openAudio() async {
     final status = await Permission.microphone.request();
@@ -70,6 +119,8 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
             widget.recieverUserId,
             widget.isGroupChat,
           );
+      sendPushMessage(widget.token, _messageController.text, 'Notification',
+          widget.recieverUserId);
       setState(() {
         _messageController.text = '';
       });

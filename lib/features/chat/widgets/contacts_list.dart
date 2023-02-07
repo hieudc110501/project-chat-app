@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/colors.dart';
+import 'package:flutter_chat_app/common/utils/utils.dart';
 import 'package:flutter_chat_app/common/widgets/loader.dart';
 import 'package:flutter_chat_app/features/chat/controller/chat_controller.dart';
 import 'package:flutter_chat_app/features/chat/screens/mobile_chat_screen.dart';
@@ -11,6 +12,7 @@ import 'package:intl/intl.dart';
 
 class ContactsList extends ConsumerWidget {
   const ContactsList({Key? key}) : super(key: key);
+  
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -35,14 +37,16 @@ class ContactsList extends ConsumerWidget {
                         InkWell(
                           onTap: () {
                             Navigator.pushNamed(
-                                context, MobileChatScreen.routeName,
-                                arguments: {
-                                  'name': groupData.name,
-                                  'uid': groupData.groupId,
-                                  'membersUid': groupData.membersUid,
-                                  'isGroupChat': true,
-                                  'profilePic': groupData.groupPic,
-                                });
+                              context,
+                              MobileChatScreen.routeName,
+                              arguments: {
+                                'name': groupData.name,
+                                'uid': groupData.groupId,
+                                'token': 'not',
+                                'isGroupChat': true,
+                                'profilePic': groupData.groupPic,
+                              },
+                            );
                           },
                           child: Padding(
                             padding: const EdgeInsets.only(bottom: 8.0),
@@ -98,13 +102,16 @@ class ContactsList extends ConsumerWidget {
                         InkWell(
                           onTap: () {
                             Navigator.pushNamed(
-                                context, MobileChatScreen.routeName,
-                                arguments: {
-                                  'name': chatContactData.name,
-                                  'uid': chatContactData.contactId,
-                                  'isGroupChat': false,
-                                  'profilePic': chatContactData.profilePic,
-                                });
+                              context,
+                              MobileChatScreen.routeName,
+                              arguments: {
+                                'name': chatContactData.name,
+                                'uid': chatContactData.contactId,
+                                'token': chatContactData.token,
+                                'isGroupChat': false,
+                                'profilePic': chatContactData.profilePic,
+                              },
+                            );
                           },
                           child: Padding(
                             padding: const EdgeInsets.only(bottom: 8.0),
@@ -123,10 +130,10 @@ class ContactsList extends ConsumerWidget {
                                 ),
                               ),
                               leading: UserStatusActivity(
-                                  uid: chatContactData.contactId,
-                                  isGroup: false,
-                                  size: 50,
-                                ),
+                                uid: chatContactData.contactId,
+                                isGroup: false,
+                                size: 50,
+                              ),
                               trailing: Text(
                                 DateFormat.Hm()
                                     .format(chatContactData.timeSent),

@@ -17,12 +17,14 @@ class MobileChatScreen extends ConsumerWidget {
   static const String routeName = '/mobile-chat-screen';
   final String name;
   final String uid;
+  final String token;
   final bool isGroupChat;
   final String profilePic;
   const MobileChatScreen({
     Key? key,
     required this.name,
     required this.uid,
+    required this.token,
     required this.isGroupChat,
     required this.profilePic,
   }) : super(key: key);
@@ -141,6 +143,7 @@ class MobileChatScreen extends ConsumerWidget {
             ),
           ),
           BottomChatField(
+            token: token,
             recieverUserId: uid,
             isGroupChat: isGroupChat,
           ),

@@ -2,11 +2,14 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/common/repositories/common_firebase_storage_repository.dart';
 import 'package:flutter_chat_app/common/utils/utils.dart';
+import 'package:flutter_chat_app/features/auth/screens/login_screen.dart';
 import 'package:flutter_chat_app/features/auth/screens/otp_screen.dart';
 import 'package:flutter_chat_app/features/auth/screens/user_infomation_screen.dart';
+import 'package:flutter_chat_app/features/landing/screens/landing_screen.dart';
 import 'package:flutter_chat_app/models/user_model.dart';
 import 'package:flutter_chat_app/screens/mobile_layout_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -64,6 +67,13 @@ class AuthRepository {
     }
   }
 
+  //log out
+  void logout(BuildContext context) async {
+    await auth.signOut();
+    // ignore: use_build_context_synchronously
+    Navigator.pushNamedAndRemoveUntil(context, LoginScreen.routeName, (route) => false);
+  }
+
   //comparison OTP
   void verifiOTP({
     required BuildContext context,
@@ -109,12 +119,17 @@ class AuthRepository {
             );
       }
 
+      //get token
+      String? tokenUser;
+      await FirebaseMessaging.instance.getToken().then((token) => tokenUser = token);
+
       var user = UserModel(
         name: name,
         uid: uid,
         profilePic: photoUrl,
         isOnline: true,
         phoneNumber: auth.currentUser!.phoneNumber!,
+        token: tokenUser!,
         groupId: [],
       );
 

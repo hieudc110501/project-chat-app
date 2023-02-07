@@ -53,6 +53,7 @@ class ChatRepository {
             profilePic: user.profilePic,
             contactId: chatContact.contactId,
             timeSent: chatContact.timeSent,
+            token: user.token,
             isOnline: user.isOnline,
             lastMessage: chatContact.lastMessage,
           ),
@@ -141,6 +142,7 @@ class ChatRepository {
         name: senderUserData.name,
         profilePic: senderUserData.profilePic,
         contactId: senderUserData.uid,
+        token: senderUserData.token,
         timeSent: timeSent,
         lastMessage: text,
       );
@@ -159,6 +161,7 @@ class ChatRepository {
         name: receiverUserData!.name,
         profilePic: receiverUserData.profilePic,
         contactId: receiverUserData.uid,
+        token: receiverUserData.token,
         timeSent: timeSent,
         lastMessage: text,
       );

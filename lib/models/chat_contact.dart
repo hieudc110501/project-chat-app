@@ -5,6 +5,7 @@ class ChatContact {
   final String profilePic;
   final String contactId;
   final DateTime timeSent;
+  final String token;
   final bool? isOnline;
   final String lastMessage;
 
@@ -13,6 +14,7 @@ class ChatContact {
     required this.profilePic,
     required this.contactId,
     required this.timeSent,
+    required this.token,
     this.isOnline,
     required this.lastMessage,
   });
@@ -26,6 +28,7 @@ class ChatContact {
       'profilePic': profilePic,
       'contactId': contactId,
       'timeSent': timeSent.millisecondsSinceEpoch,
+      'token': token,
       'isOnline': isOnline,
       'lastMessage': lastMessage,
     };
@@ -37,6 +40,7 @@ class ChatContact {
       profilePic: map['profilePic'] as String,
       contactId: map['contactId'] as String,
       timeSent: DateTime.fromMillisecondsSinceEpoch(map['timeSent'] as int),
+      token: map['token'] as String,
       isOnline: map['isOnline'] ?? false,
       lastMessage: map['lastMessage'] as String,
     );

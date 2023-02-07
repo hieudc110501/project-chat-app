@@ -49,6 +49,9 @@ class SelectContactRepository {
             arguments: {
               'name': userData.name,
               'uid': userData.uid,
+              'token': userData.token,
+              'isGroupChat': false,
+              'profilePic': userData.profilePic,
             },
           );
         }

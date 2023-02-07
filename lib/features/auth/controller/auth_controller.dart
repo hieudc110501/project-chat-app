@@ -40,6 +40,10 @@ class AuthController {
     authRepository.signInWithPhone(context, phoneNumber);
   }
 
+  void logout(BuildContext context) {
+    authRepository.logout(context);
+  }
+
   //comparsion OTP
   void verifyOTP(BuildContext context, String verificationId, String userOTP) {
     authRepository.verifiOTP(

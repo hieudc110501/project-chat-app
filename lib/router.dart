@@ -38,12 +38,14 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       final arguments = settings.arguments as Map<String, dynamic>;
       final name = arguments['name'];
       final uid = arguments['uid'];
+      final token = arguments['token'];
       final isGroupChat = arguments['isGroupChat'];
       final profilePic = arguments['profilePic'];
       return MaterialPageRoute(
         builder: (context) => MobileChatScreen(
           name: name,
           uid: uid,
+          token: token,
           isGroupChat: isGroupChat,
           profilePic: profilePic,
         ),
